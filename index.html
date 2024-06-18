@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="arquivo.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<title>Ciclo de Estudos</title>
+</head>
+<body>
+<pre>
+    <h1>CICLO</h1>
+</pre>
+
+    <form id="studyForm">
+        <label for="subject">MATÉRIA:</label>
+        <input type="text" id="subject" name="subject" required>
+        <label for="hours">HORAS DE ESTUDO:</label>
+        <input type="number" id="hours" name="hours" min="1" max="24" required>
+        <button type="submit">ADICIONAR MATÉRIA</button>
+    </form>
+    <div class="chart-container">
+        <canvas id="studyChart"></canvas>
+    </div>
+        <button id="downloadChart">BAIXAR CICLO</button>
+</body>
+</html>

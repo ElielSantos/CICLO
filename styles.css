@@ -1,7 +1,7 @@
 body {
     font-family: 'Andale Mono', monospace;
     text-align: center;
-    font-size: 150%;
+    font-size: 130%;
     font-weight: bold;
     background-color: #f4f4f4;
     margin: 0;
@@ -30,7 +30,8 @@ canvas {
 
 form {
     width: 80%;
-    max-width: 400px; /* Largura máxima do formulário */
+    max-width: 400px;  
+    max-height: 500px;  
     margin: 20px auto;
     display: flex;
     flex-direction: column;

@@ -3,27 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="arquivo.js"></script>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-<title>Ciclo de Estudos</title>
+    <title>Ciclo de Estudos</title>
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-pie.min.js"></script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        #container {
+            width: 100%;
+            max-width: 600px; /* Ajusta o tamanho máximo do gráfico */
+            height: 500px;
+            margin-bottom: 20px;
+        }
+        #studyForm {
+            width: 100%;
+            max-width: 400px; /* Ajusta o tamanho máximo do formulário */
+            margin: 20px;
+        }
+        #studyForm label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        #studyForm input, #studyForm button {
+            width: calc(100% - 22px);
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px; /* Espaçamento entre o input e o botão */
+        }
+        #studyForm input[type="number"] {
+            -moz-appearance: textfield; /* Remove a seta no número */
+        }
+        #studyForm input[type="number"]::-webkit-inner-spin-button, 
+        #studyForm input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none; /* Remove a seta no número */
+            margin: 0;
+        }
+        #studyForm button {
+            background-color: #000; /* Botão preto */
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 0; /* Remove a margem inferior do botão */
+        }
+        #studyForm button:hover {
+            background-color: #333; /* Cor do botão quando o mouse passa por cima */
+        }
+    </style>
 </head>
 <body>
-<pre>
-    <h1>CICLO</h1>
-</pre>
-
+    <div id="container"></div>
     <form id="studyForm">
-        <label for="subject">MATÉRIA:</label>
+        <label for="subject">Matéria:</label>
         <input type="text" id="subject" name="subject" required>
-        <label for="hours">HORAS DE ESTUDO:</label>
+        <label for="hours">Horas de Estudo:</label>
         <input type="number" id="hours" name="hours" min="1" max="24" required>
-        <button type="submit">ADICIONAR MATÉRIA</button>
+        <button type="submit">Adicionar Matéria</button>
     </form>
-    <div class="chart-container">
-        <canvas id="studyChart"></canvas>
-    </div>
-        <button id="downloadChart">BAIXAR CICLO</button>
+
+    <script>
+        anychart.onDocumentReady(function () {
+            var chartData = []; // Array global para armazenar os dados
+            var chart = anychart.pie(chartData);
+            chart.innerRadius('40%'); // Ajusta para criar um gráfico de donut
+
+            // Define a paleta de cores personalizada
+            var palette = anychart.palettes.distinctColors();
+            palette.items([
+                { color: '#ff5d0d' },
+                { color: '#ff3800' }
+            ]);
+            chart.palette(palette);
+
+            // Função para formatar o texto das etiquetas
+            function formatLabelText(value, name) {
+                return value + 'H\n' + name;
+            }
+
+            // Configura o formato das etiquetas
+            chart.labels().format(function() {
+                var value = this.value; // Usa o valor real das horas
+                var name = this.x;
+                return formatLabelText(value, name);
+            });
+            chart.labels().fontSize(12);
+            chart.labels().fontWeight('normal');
+            chart.labels().textOverflow('wrap'); // Permite quebra de linha automática
+            chart.tooltip().format('{%x}: {%y}H');
+            chart.tooltip().fontWeight('bold');
+
+            chart.container('container');
+            chart.draw(); // Desenha o gráfico inicialmente
+
+            document.getElementById('studyForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                var subject = document.getElementById('subject').value.trim().toUpperCase();
+                var hours = parseInt(document.getElementById('hours').value, 10);
+
+                if (subject && hours) {
+                    try {
+                        var found = false;
+
+                        // Verifica se a matéria já está no gráfico
+                        for (var i = 0; i < chartData.length; i++) {
+                            if (chartData[i][0] === subject) {
+                                chartData[i][1] += hours; // Adiciona as horas à entrada existente
+                                found = true;
+                                console.log(`Matéria encontrada: ${subject}. Valor atualizado.`);
+                                break;
+                            }
+                        }
+
+                        if (!found) {
+                            chartData.push([subject, hours]); // Adiciona nova entrada com horas
+                            console.log(`Matéria não encontrada: ${subject}. Nova entrada adicionada.`);
+                        }
+
+                        // Remove entradas com valor fixo de 100 horas
+                        chartData = chartData.filter(function(entry) {
+                            return entry[1] !== 100;
+                        });
+
+                        // Atualiza o gráfico com os dados acumulados
+                        chart.data(chartData);
+
+                        // Força a reinicialização do gráfico
+                        chart.dispose();
+                        chart = anychart.pie(chartData);
+                        chart.innerRadius('40%');
+                        chart.palette(palette);
+
+                        // Reaplica o formato das etiquetas
+                        chart.labels().format(function() {
+                            var value = this.value; // Usa o valor real das horas
+                            var name = this.x;
+                            return formatLabelText(value, name);
+                        });
+                        chart.labels().fontSize(12);
+                        chart.labels().fontWeight('normal');
+                        chart.labels().textOverflow('wrap');
+                        chart.tooltip().format('{%x}: {%y}H');
+                        chart.tooltip().fontWeight('bold');
+
+                        chart.container('container');
+                        chart.draw();
+
+                        // Log dos dados após a atualização
+                        console.log("Dados do gráfico após atualização:", chartData);
+
+                        // Limpa os campos do formulário
+                        document.getElementById('subject').value = '';
+                        document.getElementById('hours').value = '';
+                    } catch (error) {
+                        console.error("Erro ao atualizar os dados do gráfico:", error);
+                    }
+                } else {
+                    console.error("Dados inválidos no formulário.");
+                }
+            });
+        });
+    </script>
 </body>
 </html>

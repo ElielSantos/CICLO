@@ -89,4 +89,4 @@
 
         canvas.width = 500;
         canvas.height = 500;
-    </script>
+    

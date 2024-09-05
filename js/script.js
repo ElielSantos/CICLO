@@ -89,4 +89,9 @@
 
         canvas.width = 500;
         canvas.height = 500;
+
+        document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+});
+
     

@@ -1,121 +1,9 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
+<html lang="pt-BR"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ciclo de Estudos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #ffffff; /* Cor de fundo da página */
-            color: #333; /* Cor do texto */
-            height: 100%;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            grid-template-columns: 1fr;
-            align-items: center;
-            justify-items: center;
-            text-align: center;
-        }
-        .container {
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            grid-template-columns: 1fr;
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .item {
-            padding: 20px;
-        }
-        #header {
-            border-bottom: 1px solid #ccc;
-        }
-        #footer {
-            border-top: 1px solid #ccc;
-        }
-        h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-        }
-        #content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-        #container {
-            width: 100%;
-            max-width: 600px;
-            height: 400px;
-            background-color: transparent;
-            margin-bottom: 20px;
-        }
-        #studyForm {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        #studyForm label {
-            font-weight: 700;
-            text-align: center;
-        }
-        #studyForm input, #studyForm button {
-            padding: 10px;
-            box-sizing: border-box;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 100%;
-        }
-        #studyForm input[type="number"] {
-            -moz-appearance: textfield;
-        }
-        #studyForm input[type="number"]::-webkit-inner-spin-button, 
-        #studyForm input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        #studyForm button {
-            background-color: #000000; /* Cor de fundo dos botões */
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: 700;
-            transition: background-color 0.3s;
-        }
-        #studyForm button:hover {
-            background-color: #333333;
-        }
-        #downloadButton {
-            background-color: #000000;
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: 700;
-            width: 100%;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        #downloadButton:hover {
-            background-color: #333333;
-        }
-        /* Estilos responsivos */
-        @media (max-width: 600px) {
-            #container {
-                height: 300px;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">
@@ -124,114 +12,21 @@
         </div>
         <div id="content" class="item">
             <section>
-                <canvas id="container"></canvas>
+                <canvas id="container" width="800" height="800"></canvas>
                 <form id="studyForm">
                     <label for="subject">MATÉRIA:</label>
-                    <input type="text" id="subject" name="subject" required>
+                    <input type="text" id="subject" name="subject" required="">
                     <label for="hours">HORAS DE ESTUDO:</label>
-                    <input type="number" id="hours" name="hours" min="1" max="24" required>
+                    <input type="number" id="hours" name="hours" min="1" max="24" required="">
                     <button type="submit">ADICIONAR MATÉRIA</button>
                 </form>
                 <button id="downloadButton">SALVAR IMAGEM</button>
             </section>
         </div>
         <div id="footer" class="item">
-            <p>&copy; 2024</p>
+            <p>© 2024</p>
         </div>
     </div>
-
-    <script>
-        const canvas = document.getElementById('container');
-        const ctx = canvas.getContext('2d');
-        const data = [];
-
-        const wrapText = (text, x, y, maxWidth, lineHeight) => {
-            const words = text.split(' ');
-            let line = '';
-            let lineCount = 0;
-
-            words.forEach(word => {
-                const testLine = line + word + ' ';
-                const metrics = ctx.measureText(testLine);
-                const testWidth = metrics.width;
-
-                if (testWidth > maxWidth && line !== '') {
-                    ctx.fillText(line, x, y);
-                    line = word + ' ';
-                    y += lineHeight;
-                } else {
-                    line = testLine;
-                }
-            });
-
-            ctx.fillText(line, x, y);
-        };
-
-        const renderChart = () => {
-            const segments = data.length;
-            const anglePerSegment = 2 * Math.PI / segments;
-            let startAngle = -0.5 * Math.PI;
-            const radius = Math.min(canvas.width, canvas.height) / 2 - 20;
-            const innerRadius = radius * 0.3;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            data.forEach((item, index) => {
-                const endAngle = startAngle + anglePerSegment;
-
-                ctx.beginPath();
-                ctx.arc(canvas.width / 2, canvas.height / 2, radius, startAngle, endAngle);
-                ctx.arc(canvas.width / 2, canvas.height / 2, innerRadius, endAngle, startAngle, true);
-                ctx.closePath();
-                ctx.fillStyle = ['#f4d598', '#9a8c82', '#c4c4c4', '#fffdd0', '#8fbc8f'][index % 5];
-                ctx.fill();
-
-                ctx.strokeStyle = 'transparent';
-                ctx.lineWidth = 4;
-                ctx.stroke();
-
-                const midAngle = startAngle + anglePerSegment / 2;
-                const textX = canvas.width / 2 + Math.cos(midAngle) * (radius - (radius - innerRadius) / 2);
-                const textY = canvas.height / 2 + Math.sin(midAngle) * (radius - (radius - innerRadius) / 2);
-
-                ctx.fillStyle = '#333';
-                ctx.font = 'bold 14px Roboto';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-
-                wrapText(item.hours + 'H', textX, textY - 10, radius / 2 - 10, 16);
-                wrapText(item.subject, textX, textY + 15, radius / 2 - 10, 16);
-
-                startAngle = endAngle;
-            });
-        };
-
-        document.getElementById('studyForm').addEventListener('submit', (event) => {
-            event.preventDefault();
-
-            const subjectInput = document.getElementById('subject');
-            const hoursInput = document.getElementById('hours');
-            const subject = subjectInput.value.trim().toUpperCase();
-            const hours = parseInt(hoursInput.value, 10);
-
-            data.push({ subject, hours });
-
-            renderChart();
-
-            subjectInput.value = '';
-            hoursInput.value = '';
-        });
-
-        document.getElementById('downloadButton').addEventListener('click', () => {
-            const image = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.href = image;
-            link.download = 'grafico-estudos.png';
-            link.click();
-        });
-
-        canvas.width = 600;
-        canvas.height = 400;
-    </script>
+    <script src="js/script.js"></script>
 </body>
 </html>

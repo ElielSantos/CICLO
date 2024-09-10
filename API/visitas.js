@@ -1,38 +1,21 @@
-// /api/visitas.js
-const fs = require('fs');
-const path = require('path');
-
-// Caminho para o arquivo de visitas
-const filePath = path.resolve('./visitas.txt');
+import fs from 'fs';
+import path from 'path';
 
 export default function handler(req, res) {
-  // Lê o número de visitas do arquivo
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      // Se o arquivo não existir, cria com 0 visitas
-      if (err.code === 'ENOENT') {
-        fs.writeFileSync(filePath, '0');
-        data = '0';
-      } else {
-        return res.status(500).json({ message: 'Erro ao ler o arquivo' });
-      }
-    }
+  const filePath = path.resolve('.', 'visitas.txt');
 
-    // Converte o número de visitas em um número inteiro
-    let visitas = parseInt(data, 10) || 0;
+  // Verificar se o arquivo existe
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, '0');
+  }
 
-    // Incrementa o número de visitas
-    visitas++;
+  // Ler o conteúdo do arquivo
+  const visitas = parseInt(fs.readFileSync(filePath, 'utf8'), 10);
 
-    // Escreve o novo número de visitas no arquivo
-    fs.writeFile(filePath, visitas.toString(), err => {
-      if (err) {
-        return res.status(500).json({ message: 'Erro ao atualizar o arquivo' });
-      }
+  // Incrementar o número de visitas
+  const novasVisitas = visitas + 1;
+  fs.writeFileSync(filePath, novasVisitas.toString());
 
-      // Retorna o número de visitas atualizado
-      return res.status(200).json({ visitas });
-    });
-  });
+  // Retornar o número de visitas como JSON
+  res.status(200).json({ visitas: novasVisitas });
 }
-

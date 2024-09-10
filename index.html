@@ -1,22 +1,3 @@
-<?php
-// Arquivo de texto para armazenar o número de visitas
-$file = 'visitas.txt';
-
-// Verifica se o arquivo existe, se não, cria o arquivo com a contagem inicial de 0
-if (!file_exists($file)) {
-    file_put_contents($file, '0');
-}
-
-// Lê o número de visitas do arquivo
-$visitas = (int)file_get_contents($file);
-
-// Incrementa o número de visitas
-$visitas++;
-
-// Atualiza o arquivo com o novo número de visitas
-file_put_contents($file, $visitas);
-?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -48,9 +29,18 @@ file_put_contents($file, $visitas);
             <a href="https://github.com/ElielSantos/">
                 <p>© SANTOSCYBERX 2024</p>
             </a>
-            <p>Total de visitas: <?php echo $visitas; ?></p> <!-- Mostra o número de visitas -->
+          <p>Total de visitas: <span id="visitCount"></span></p>
         </div>
     </div>
     <script src="js/script.js"></script>
+    
+<script>
+  fetch('/api/visitas')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('visitCount').textContent = data.visitas;
+    })
+    .catch(error => console.error('Erro ao carregar visitas:', error));
+</script>
 </body>
 </html>

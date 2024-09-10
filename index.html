@@ -35,7 +35,7 @@
     <script src="js/script.js"></script>
     
 <script>
-  fetch('./page/api/visitas')
+  fetch('./pages/api/visitas')
     .then(response => response.json())
     .then(data => {
       document.getElementById('visitCount').textContent = data.visitas;

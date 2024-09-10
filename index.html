@@ -1,8 +1,29 @@
-<html lang="pt-BR"><head>
+<?php
+// Arquivo de texto para armazenar o número de visitas
+$file = 'visitas.txt';
+
+// Verifica se o arquivo existe, se não, cria o arquivo com a contagem inicial de 0
+if (!file_exists($file)) {
+    file_put_contents($file, '0');
+}
+
+// Lê o número de visitas do arquivo
+$visitas = (int)file_get_contents($file);
+
+// Incrementa o número de visitas
+$visitas++;
+
+// Atualiza o arquivo com o novo número de visitas
+file_put_contents($file, $visitas);
+?>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ciclo de Estudos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -15,18 +36,19 @@
                 <canvas id="container" width="800" height="800"></canvas>
                 <form id="studyForm">
                     <label for="subject">MATÉRIA:</label>
-                    <input type="text" id="subject" name="subject" required="">
+                    <input type="text" id="subject" name="subject" required>
                     <label for="hours">HORAS DE ESTUDO:</label>
-                    <input type="number" id="hours" name="hours" min="1" max="24" required="">
+                    <input type="number" id="hours" name="hours" min="1" max="24" required>
                     <button type="submit">ADICIONAR MATÉRIA</button>
                 </form>
                 <button id="downloadButton">SALVAR IMAGEM</button>
             </section>
         </div>
         <div id="footer" class="item">
-             <a href="https://github.com/ElielSantos/"
-               <p>© SANTOSCYBERX 2024</p>
-             </a>       
+            <a href="https://github.com/ElielSantos/">
+                <p>© SANTOSCYBERX 2024</p>
+            </a>
+            <p>Total de visitas: <?php echo $visitas; ?></p> <!-- Mostra o número de visitas -->
         </div>
     </div>
     <script src="js/script.js"></script>
